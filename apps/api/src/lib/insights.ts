@@ -27,35 +27,6 @@ export async function trends(query: Query) {
     };
   }, true);
 }
-export async function search(query: Query) {
-  return transaction(async (connection) => {
-    if (query.q.length < 2) return { ...metadata(query), items: [] };
-    const filters = scoped(query, 'v');
-    filters.params.push(`%${query.q}%`);
-    const search = `$${filters.params.length}`;
-    const vehicles = await rows(
-      connection,
-      `SELECT v.id,'VIN / model' AS type,concat(m.brand,' ',m.name,' · ',v.vin) AS label,'/inventory/'||v.id AS route FROM vehicles v JOIN vehicle_models m ON m.id=v.model_id WHERE ${filters.where} AND concat_ws(' ',v.vin,m.brand,m.name,m.variant) ILIKE ${search} ORDER BY v.created_at DESC LIMIT 5`,
-      filters.params,
-    );
-    const orders = await rows(
-      connection,
-      `SELECT o.id,'Order / invoice' AS type,concat(o.invoice_ref,' · ',o.customer_name) AS label,'/orders/'||o.id AS route FROM order_facts o JOIN vehicles v ON v.id=o.vehicle_id WHERE ${filters.where} AND concat_ws(' ',o.id::text,o.invoice_ref,o.customer_name) ILIKE ${search} ORDER BY o.created_at DESC LIMIT 5`,
-      filters.params,
-    );
-    const bookings = await rows(
-      connection,
-      `SELECT b.id,'Booking' AS type,concat(left(b.id::text,8),' · ',v.vin) AS label,'/bookings/'||b.id AS route FROM bookings b JOIN vehicles v ON v.id=b.vehicle_id WHERE ${filters.where} AND b.id::text ILIKE ${search} ORDER BY b.booked_at DESC LIMIT 5`,
-      filters.params,
-    );
-    const customers = await rows(
-      connection,
-      `SELECT c.id,'Customer' AS type,c.name AS label,'/customers/'||c.id AS route FROM customers c WHERE c.name ILIKE $1 ${query.branch_id || query.model_id ? `AND EXISTS(SELECT 1 FROM bookings b JOIN vehicles v ON v.id=b.vehicle_id WHERE b.customer_id=c.id AND ${filters.where.replace(/\$(\d+)/g, (_match, index) => `$${Number(index) + 1}`)})` : ''} ORDER BY c.name LIMIT 5`,
-      [`%${query.q}%`, ...filters.params.slice(0, -1)],
-    );
-    return { ...metadata(query), items: [...vehicles, ...orders, ...bookings, ...customers] };
-  }, true);
-}
 export async function activity(query: Query) {
   return transaction(async (connection) => {
     const filters = scoped(query, 'f');

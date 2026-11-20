@@ -1,6 +1,6 @@
 import { Router, type Request, type RequestHandler } from 'express';
 import multer from 'multer';
-import { id, privileges, querySchema } from '@dealerflow/contracts';
+import { id, privileges, querySchema, searchQuerySchema } from '@dealerflow/contracts';
 import { pool, rows, one } from './lib/db.ts';
 import { authenticate, authorize, type AuthRequest, login } from './lib/auth.ts';
 import { listResource } from './lib/lists.ts';
@@ -23,7 +23,8 @@ import {
 } from './lib/orders.ts';
 import { uploadDocument, reviewDocument, documentPath } from './lib/documents.ts';
 import * as analytics from './lib/analytics.ts';
-import { trends, search, activity } from './lib/insights.ts';
+import { trends, activity } from './lib/insights.ts';
+import { search } from './lib/global-search.ts';
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 4194304, files: 1, fields: 1 },
@@ -232,13 +233,16 @@ api.get(
   '/dashboard',
   wrap((request) => analytics.summary(query(request))),
 );
+api.get(
+  '/analytics/search',
+  wrap((request) => search(searchQuerySchema.parse(request.query))),
+);
 for (const [route, handler] of Object.entries({
   summary: analytics.summary,
   stock: analytics.stock,
   exceptions: analytics.exceptions,
   trends,
   records: analytics.records,
-  search,
   activity,
 }))
   api.get(

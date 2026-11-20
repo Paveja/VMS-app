@@ -121,6 +121,24 @@ export const querySchema = z.object({
     .optional(),
   event: z.enum(['bookings', 'orders', 'payments', 'deliveries']).optional(),
 });
+export const searchLimit = 5;
+export const searchQuerySchema = querySchema.extend({
+  limitPerGroup: z.coerce.number().int().min(1).max(searchLimit).default(searchLimit),
+});
+export type SearchQuery = z.infer<typeof searchQuerySchema>;
+export type SearchItem = {
+  id: string;
+  title: string;
+  subtitle: string;
+  href: string;
+  status?: string;
+};
+export type SearchGroup = {
+  type: 'vehicles' | 'customers' | 'bookings' | 'orders';
+  items: SearchItem[];
+  hasMore: boolean;
+};
+export type SearchResult = { query: string; groups: SearchGroup[] };
 export type Role = (typeof roles)[number];
 export type Employee = { id: string; name: string; email: string; role: Role };
 export type Query = z.infer<typeof querySchema>;

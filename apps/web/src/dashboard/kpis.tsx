@@ -42,7 +42,8 @@ export function Kpis({ scope }: { scope: string }) {
                 <Link className="block" to={scopedLink(metric.route, scope)}>
                   <p className="text-xs font-medium text-muted-foreground">{metric.label}</p>
                   <p
-                    className={`mt-2 break-words text-2xl font-semibold tracking-tight tabular-nums ${metric.key === 'ready' ? 'text-success' : ''}`}
+                    className={`mt-2 break-words text-base font-semibold leading-6 tracking-tight
+                      tabular-nums sm:text-lg ${metric.key === 'ready' ? 'text-success' : ''}`}
                   >
                     {typeof value === 'string' ? formatMoney(value) : value.toLocaleString('en-IN')}
                   </p>

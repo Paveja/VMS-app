@@ -12,3 +12,4 @@ core.*
 report.*.json
 isolate-*.log
 .revolte/artifacts/
+.revolte/runtime/

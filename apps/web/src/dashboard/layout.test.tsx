@@ -8,7 +8,7 @@ import { Select, Dialog } from '../components/ui';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { queryClient, useDebouncedSearch, useAction } from '../lib/api';
-import { SearchDialog } from '../components/search-dialog';
+import { GlobalSearch } from '../components/search-dialog';
 import { ResourceViews } from '../operations/resource-views';
 import { ResourceList } from '../operations/resource-list';
 import { BookingDialogs } from '../operations/booking-dialogs';
@@ -90,7 +90,7 @@ describe('UI quality regressions', () => {
     view.unmount();
     expect(vi.getTimerCount()).toBe(0);
   });
-  it('gives search and simultaneous dialogs distinct accessible title associations', () => {
+  it('keeps header search separate from simultaneous dialog title associations', () => {
     Object.defineProperties(HTMLDialogElement.prototype, {
       showModal: {
         configurable: true,
@@ -107,16 +107,16 @@ describe('UI quality regressions', () => {
     });
     renderWorkspace(
       <>
-        <SearchDialog onClose={() => {}} />
+        <GlobalSearch />
         <BookingHarness />
         <Dialog title="Another panel" onClose={() => {}}>
           Content
         </Dialog>
       </>,
     );
-    const search = screen.getByRole('dialog', { name: 'Search workspace' });
+    const search = screen.getByRole('combobox', { name: 'Search VIN, customer, booking or order' });
     const other = screen.getByRole('dialog', { name: 'Another panel' });
-    expect(search.getAttribute('aria-labelledby')).not.toBe(other.getAttribute('aria-labelledby'));
+    expect(search.id).not.toBe(other.getAttribute('aria-labelledby'));
     for (const name of ['Cancel this booking?', 'Create sales order']) {
       const panel = screen.getByRole('dialog', { name });
       expect(panel.querySelector('h2')?.id).toBe(panel.getAttribute('aria-labelledby'));

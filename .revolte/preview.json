@@ -19,7 +19,7 @@
       "name": "PostgreSQL",
       "check": "psql --version",
       "install": "sudo -n apt-get update && sudo -n apt-get install -y postgresql postgresql-client",
-      "start": "node scripts/provision.mjs",
+      "start": "node scripts/provision.mjs && npm run db:migrate && npm run db:seed",
       "ready": "pg_isready -h 127.0.0.1 -p 5432"
     }
   ]

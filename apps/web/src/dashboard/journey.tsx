@@ -75,7 +75,9 @@ export function Journey({ scope }: { scope: string }) {
                     <Icon size={20} className="text-primary" />
                     {index < 5 && <ArrowRight size={14} className="text-muted-foreground" />}
                   </div>
-                  <p className="text-2xl font-semibold">{value}</p>
+                  <p className="break-words text-base font-semibold leading-6 tabular-nums sm:text-lg">
+                    {value}
+                  </p>
                   <p className="mt-2 text-xs text-muted-foreground">{label}</p>
                 </Link>
               ))}

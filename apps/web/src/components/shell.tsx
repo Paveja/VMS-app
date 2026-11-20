@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   CarFront,
@@ -9,12 +9,11 @@ import {
   ClipboardList,
   LogOut,
   Menu,
-  Search,
   ChevronRight,
   ShieldCheck,
 } from 'lucide-react';
 import type { Employee } from '@dealerflow/contracts';
-import { SearchDialog } from './search-dialog';
+import { GlobalSearch } from './search-dialog';
 import { Button, Dialog } from './ui';
 const links = [
   { to: '/', label: 'Command Center', icon: LayoutDashboard },
@@ -34,7 +33,7 @@ export function Shell({
   children: ReactNode;
 }) {
   const [menu, setMenu] = useState(false);
-  const [search, setSearch] = useState(false);
+  const location = useLocation();
   const navigation = (
     <>
       <Link to="/" className="mb-8 flex items-center gap-3 px-4 text-xl font-bold tracking-tight">
@@ -108,9 +107,9 @@ export function Shell({
       <div className="min-w-0 lg:ml-60">
         <header
           data-no-print
-          className="flex min-h-16 items-center justify-between gap-4 border-b border-border bg-card px-4 sm:px-8"
+          className="relative flex min-h-16 min-w-0 items-center justify-between gap-4 border-b border-border bg-card px-4 sm:px-8"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-3">
             <Button
               secondary
               className="lg:hidden"
@@ -121,16 +120,9 @@ export function Shell({
             </Button>
             <span className="hidden text-xs text-muted-foreground sm:inline">Workspace</span>
             <ChevronRight className="hidden text-muted-foreground sm:block" size={14} />
-            <span className="text-sm font-medium">Dealership operations</span>
+            <span className="hidden text-sm font-medium md:inline">Dealership operations</span>
           </div>
-          <button
-            onClick={() => setSearch(true)}
-            className="flex min-h-11 items-center gap-3 rounded-control border border-border px-4 text-sm text-muted-foreground"
-          >
-            <Search size={16} />
-            <span className="hidden sm:inline">Search your workspace</span>
-            <kbd className="hidden rounded bg-muted px-1 text-xs md:inline">Search</kbd>
-          </button>
+          <GlobalSearch key={`${location.pathname}${location.search}`} />
         </header>
         <main id="content" className="mx-auto max-w-[1600px] space-y-6 p-4 sm:p-8">
           {children}
@@ -141,7 +133,6 @@ export function Shell({
           <div className="flex min-h-full flex-col">{navigation}</div>
         </Dialog>
       )}
-      {search && <SearchDialog onClose={() => setSearch(false)} />}
     </div>
   );
 }
