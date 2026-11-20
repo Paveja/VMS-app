@@ -12,6 +12,7 @@ import { ResourceList } from './operations/resource-list';
 import { ResourceDetail } from './operations/resource-detail';
 import { ResourceForm } from './operations/resource-form';
 import { OrderDetail } from './operations/order-detail';
+import { QuotationPrototype } from './quotations/quotation-prototype';
 import './theme.css';
 function App() {
   const [employee, setEmployee] = useState<Employee | null>(null);
@@ -49,6 +50,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Dashboard employee={employee} />} />
         <Route path="/records" element={<PaymentRecords />} />
+        <Route path="/quotations" element={<QuotationPrototype />} />
         <Route path="/overview" element={<Navigate to="/" replace />} />
         {['models', 'inventory', 'customers', 'bookings', 'orders'].map((resource) => (
           <React.Fragment key={resource}>

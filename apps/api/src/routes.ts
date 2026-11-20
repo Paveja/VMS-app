@@ -26,6 +26,7 @@ import * as analytics from './lib/analytics.ts';
 import { trends, activity } from './lib/insights.ts';
 import { search } from './lib/global-search.ts';
 import { salesAreas } from './lib/sales-areas.ts';
+import { quotationPreview } from './lib/quotation-preview.ts';
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 4194304, files: 1, fields: 1 },
@@ -51,6 +52,10 @@ api.post(
   wrap((request) => login(request.body)),
 );
 api.use(authenticate);
+api.post(
+  '/quotations/preview',
+  wrap((request) => quotationPreview(request.body)),
+);
 api.get(
   '/auth/me',
   wrap(async (request) => request.employee),

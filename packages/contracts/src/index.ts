@@ -59,6 +59,51 @@ export const bookingSchema = z
 export const conversionSchema = z
   .object({ extras_paise: money.default('0'), tax_paise: money.default('0') })
   .strict();
+export const quotationCities = ['Hyderabad', 'Bengaluru'] as const;
+export const quotationDisclosure = 'Demo estimate—not live market pricing';
+export const quotationPreviewSchema = z
+  .object({
+    model_id: id,
+    model_year: z
+      .number()
+      .int()
+      .min(1900)
+      .max(new Date().getFullYear() + 1),
+    quantity: z.number().int().min(1).max(999),
+    city: z.enum(quotationCities),
+  })
+  .strict();
+export type QuotationInput = z.infer<typeof quotationPreviewSchema>;
+export type QuotationEstimate = {
+  request: QuotationInput;
+  vehicle: {
+    brand: string;
+    name: string;
+    variant: string;
+    fuel: string;
+    transmission: string;
+    image_key: string;
+  };
+  disclosure: string;
+  source: string;
+  checked_at: string;
+  components: { label: string; paise: string }[];
+  unit_paise: string;
+  total_paise: string;
+  stock: {
+    available: number;
+    in_transit: number;
+    received: number;
+    total_branches: number;
+    branches: {
+      id: string;
+      name: string;
+      available: number;
+      in_transit: number;
+      received: number;
+    }[];
+  };
+};
 export const paymentSchema = z.object({ amount_paise: positiveMoney }).strict();
 export const reviewSchema = z
   .object({

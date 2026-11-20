@@ -29,7 +29,7 @@ function Harness() {
     <>
       <output data-testid="first">{layout.widgets[0].key}</output>
       <button onClick={layout.begin}>Customize</button>
-      <button onClick={() => layout.move('stock', 1)}>Move</button>
+      <button onClick={() => layout.move(layout.widgets[0].key, 1)}>Move</button>
       <button onClick={layout.cancel}>Cancel</button>
       <button onClick={layout.save}>Save</button>
       <button onClick={layout.reset}>Reset</button>
@@ -237,25 +237,25 @@ describe('workspace presentation and exact formatting', () => {
   it('handles missing/corrupt/outdated layout without losing primary access', () => {
     expect(loadLayout('missing', 'executive')).toEqual(defaults('executive'));
     localStorage.setItem('bad', 'broken');
-    expect(loadLayout('bad', 'executive')).toHaveLength(5);
+    expect(loadLayout('bad', 'executive')).toHaveLength(6);
     localStorage.setItem('bad', JSON.stringify({ version: 99, widgets: [] }));
-    expect(loadLayout('bad', 'executive')).toHaveLength(5);
+    expect(loadLayout('bad', 'executive')).toHaveLength(6);
   });
   it('previews, cancels, saves, reloads and resets keyboard-usable layout controls', () => {
     const view = render(<Harness />);
     fireEvent.click(screen.getByText('Customize'));
     fireEvent.click(screen.getByText('Move'));
-    expect(screen.getByTestId('first').textContent).toBe('trends');
-    fireEvent.click(screen.getByText('Cancel'));
     expect(screen.getByTestId('first').textContent).toBe('stock');
+    fireEvent.click(screen.getByText('Cancel'));
+    expect(screen.getByTestId('first').textContent).toBe('sales');
     fireEvent.click(screen.getByText('Customize'));
     fireEvent.click(screen.getByText('Move'));
     fireEvent.click(screen.getByText('Save'));
     view.unmount();
     render(<Harness />);
-    expect(screen.getByTestId('first').textContent).toBe('trends');
-    fireEvent.click(screen.getByText('Reset'));
     expect(screen.getByTestId('first').textContent).toBe('stock');
+    fireEvent.click(screen.getByText('Reset'));
+    expect(screen.getByTestId('first').textContent).toBe('sales');
   });
   it('reports storage failures instead of claiming save', () => {
     render(<Harness />);

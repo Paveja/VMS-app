@@ -12,6 +12,7 @@ import { TrendWidget } from './trend-widget';
 import { ModelWidget } from './model-widget';
 import { BranchWidget } from './branch-widget';
 import { ActivityWidget } from './activity-widget';
+import { SalesAreaWidget } from './sales-area-widget';
 import { useLayout, widgetKeys } from './layout';
 import { CustomizeBar, WidgetControls } from './customize';
 import type { Summary } from './types';
@@ -29,6 +30,7 @@ export function Dashboard({ employee }: { employee: Employee }) {
   );
 }
 const names = {
+  sales: 'Top sales areas',
   stock: 'Stock at a glance',
   trends: 'Transaction pulse',
   models: 'Model spotlight',
@@ -87,7 +89,9 @@ function Workspace({
                 title={names[widget.key]}
                 aside={
                   <span className="text-xs text-muted-foreground">
-                    {widget.key === 'trends' ? 'Selected event period' : 'Current scope'}
+                    {['trends', 'sales'].includes(widget.key)
+                      ? 'Selected event period'
+                      : 'Current scope'}
                   </span>
                 }
               >
@@ -100,7 +104,9 @@ function Workspace({
                   />
                 )}
                 <div className={widget.visible ? '' : 'opacity-40'}>
-                  {widget.key === 'stock' ? (
+                  {widget.key === 'sales' ? (
+                    <SalesAreaWidget scope={scope} />
+                  ) : widget.key === 'stock' ? (
                     <StockWidget scope={scope} />
                   ) : widget.key === 'trends' ? (
                     <TrendWidget scope={scope} />

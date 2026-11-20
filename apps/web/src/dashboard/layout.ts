@@ -1,26 +1,41 @@
 import { useState } from 'react';
 import { z } from 'zod';
-export const widgetKeys = ['stock', 'trends', 'models', 'branches', 'activity'] as const;
+export const widgetKeys = ['sales', 'stock', 'trends', 'models', 'branches', 'activity'] as const;
 const widget = z.object({
   key: z.enum(widgetKeys),
   size: z.enum(['small', 'medium', 'large']),
   visible: z.boolean(),
 });
-const layoutSchema = z.object({
-  version: z.literal(1),
-  widgets: z
-    .array(widget)
-    .length(5)
-    .refine((items) => new Set(items.map((item) => item.key)).size === 5),
-});
+const salesWidget: z.infer<typeof widget> = { key: 'sales', size: 'small', visible: true };
+const layoutSchema = z
+  .object({
+    version: z.literal(1),
+    widgets: z
+      .array(widget)
+      .min(widgetKeys.length - 1)
+      .max(widgetKeys.length)
+      .refine((items) => new Set(items.map((item) => item.key)).size === items.length),
+  })
+  .transform((layout) => ({
+    ...layout,
+    widgets: layout.widgets.some((item) => item.key === 'sales')
+      ? layout.widgets
+      : [salesWidget, ...layout.widgets],
+  }))
+  .refine((layout) => layout.widgets.length === widgetKeys.length);
 export type Widget = z.infer<typeof widget>;
 export const defaults = (preset: string): Widget[] =>
   (preset === 'operations'
-    ? ['models', 'stock', 'activity', 'branches', 'trends']
+    ? ['sales', 'models', 'stock', 'activity', 'branches', 'trends']
     : widgetKeys
   ).map((key) => ({
     key: key as Widget['key'],
-    size: key === 'models' || key === 'branches' ? 'large' : key === 'stock' ? 'small' : 'medium',
+    size:
+      key === 'models' || key === 'branches'
+        ? 'large'
+        : key === 'stock' || key === 'sales'
+          ? 'small'
+          : 'medium',
     visible: true,
   }));
 export function loadLayout(key: string, preset: string): Widget[] {

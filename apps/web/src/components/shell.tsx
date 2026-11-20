@@ -7,6 +7,7 @@ import {
   Users,
   CalendarCheck,
   ClipboardList,
+  FileText,
   LogOut,
   Menu,
   ChevronRight,
@@ -22,6 +23,7 @@ const links = [
   { to: '/customers', label: 'Customers', icon: Users },
   { to: '/bookings', label: 'Bookings', icon: CalendarCheck },
   { to: '/orders', label: 'Sales orders', icon: ClipboardList },
+  { to: '/quotations', label: 'Quick quotation', icon: FileText },
 ];
 export function Shell({
   employee,
