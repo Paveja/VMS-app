@@ -2,6 +2,8 @@
 
 A fictional multi-branch dealership demonstration built with React, TypeScript, Vite, Tailwind, Express and PostgreSQL. This is not a production ERP, accounting system or regulatory verification service.
 
+Last updated: 2026-11-20
+
 ## Setup
 
 Requires Node.js 22.12+ and PostgreSQL 14+. Current package versions are pinned in package-lock.json. No other application database is supported.
