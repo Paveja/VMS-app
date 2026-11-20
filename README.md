@@ -1,5 +1,7 @@
 # DealerFlow · Vehicle Management System
 
+Last updated: November 20, 2026.
+
 A fictional multi-branch dealership demonstration built with React, TypeScript, Vite, Tailwind, Express and PostgreSQL. This is not a production ERP, accounting system or regulatory verification service.
 
 ## Setup
