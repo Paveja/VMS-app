@@ -1,24 +1,36 @@
 import { useId, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, LoaderCircle, X } from 'lucide-react';
-import type { SearchItem } from '@dealerflow/contracts';
+import { Search, X } from 'lucide-react';
+import { useRecentSearches, type SearchAction } from '../lib/recent-searches';
+import { scopedLink } from '../dashboard/types';
 import { useGlobalSearch } from '../lib/use-global-search';
-import { SearchResults, searchOptionId } from './search-results';
-import { Button } from './ui';
+import { searchOptionId } from './search-results';
+import { SearchPopover } from './search-popover';
 
-export function GlobalSearch() {
+export function GlobalSearch({ employeeId }: { employeeId?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const search = useGlobalSearch(containerRef);
+  const recent = useRecentSearches(employeeId);
+  const search = useGlobalSearch(containerRef, recent.actions);
   const input = useRef<HTMLInputElement>(null);
   const id = useId();
   const listId = `${id}-results`;
   const navigate = useNavigate();
   const count = search.groups.reduce((total, group) => total + group.items.length, 0);
-  const hasResults = !search.loading && !search.error && count > 0;
-  function select(item: SearchItem) {
+  const hasResults = !search.normalized || (!search.loading && !search.error && count > 0);
+  function open() {
+    recent.refresh();
+    search.setOpen(true);
+  }
+  function select(item: SearchAction) {
+    if (item.term) {
+      search.change(item.term);
+      input.current?.focus();
+      return;
+    }
+    recent.remember(search.normalized, search.groups);
     search.change('');
     search.setOpen(false);
-    navigate(`${item.href}${search.context ? `?${search.context}` : ''}`);
+    navigate(search.context ? scopedLink(item.href, search.context) : item.href);
   }
   return (
     <div
@@ -53,8 +65,8 @@ export function GlobalSearch() {
           maxLength={120}
           value={search.text}
           onChange={(event) => search.change(event.target.value)}
-          onFocus={() => search.setOpen(true)}
-          onClick={() => search.setOpen(true)}
+          onFocus={open}
+          onClick={open}
           onKeyDown={(event) => {
             if (event.nativeEvent.isComposing) return;
             if (event.key === 'Escape') {
@@ -68,6 +80,7 @@ export function GlobalSearch() {
             if (event.key === 'Enter' && search.open) {
               event.preventDefault();
               if (search.active) select(search.active);
+              else recent.remember(search.normalized, search.groups);
             }
           }}
           className="h-11 w-full min-w-0 truncate rounded-control border border-border bg-background
@@ -90,53 +103,16 @@ export function GlobalSearch() {
         )}
       </div>
       {search.open && (
-        <div
-          className="absolute inset-x-4 top-full z-50 mt-2 min-w-0 overflow-hidden rounded-container
-            border border-border bg-card shadow-popover sm:inset-x-0"
-        >
-          <div
-            id={`${id}-status`}
-            role={search.error ? 'alert' : 'status'}
-            aria-live="polite"
-            className="px-4 py-3 text-sm text-muted-foreground"
-          >
-            {search.normalized.length < 2 ? (
-              search.normalized ? (
-                'Enter at least 2 characters to search.'
-              ) : (
-                'Type at least 2 characters to find a record.'
-              )
-            ) : search.error ? (
-              'Search temporarily unavailable'
-            ) : search.loading ? (
-              <span className="flex items-center gap-2">
-                <LoaderCircle size={16} aria-hidden="true" className="motion-safe:animate-spin" />
-                Searching…
-              </span>
-            ) : count ? (
-              `${count} ${count === 1 ? 'result' : 'results'} shown. Use ↑ ↓ to choose and Enter to open.`
-            ) : (
-              'No matches found'
-            )}
-          </div>
-          {search.error && (
-            <div className="px-4 pb-3">
-              <Button secondary onClick={search.retry}>
-                Retry search
-              </Button>
-            </div>
-          )}
-          {hasResults && (
-            <SearchResults
-              id={listId}
-              groups={search.groups}
-              query={search.normalized}
-              activeId={search.active?.id}
-              onHighlight={search.setSelectedId}
-              onSelect={select}
-            />
-          )}
-        </div>
+        <SearchPopover
+          search={search}
+          id={id}
+          emptyActions={recent.actions}
+          onSelect={select}
+          onClear={() => {
+            recent.clear();
+            input.current?.focus();
+          }}
+        />
       )}
     </div>
   );

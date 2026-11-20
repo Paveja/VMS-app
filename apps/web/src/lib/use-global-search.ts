@@ -3,8 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { searchLimit, type SearchResult } from '@dealerflow/contracts';
 import { api, queryClient } from './api';
+import type { SearchAction } from './recent-searches';
 
-export function useGlobalSearch(containerRef: RefObject<HTMLDivElement | null>) {
+export function useGlobalSearch(
+  containerRef: RefObject<HTMLDivElement | null>,
+  emptyActions: SearchAction[] = [],
+) {
   const [text, setText] = useState('');
   const [term, setTerm] = useState('');
   const [open, setOpen] = useState(false);
@@ -40,7 +44,7 @@ export function useGlobalSearch(containerRef: RefObject<HTMLDivElement | null>) 
     result.data?.query === normalized
       ? result.data.groups
       : [];
-  const items = groups.flatMap((group) => group.items);
+  const items: SearchAction[] = normalized ? groups.flatMap((group) => group.items) : emptyActions;
   const active = items.find((item) => item.id === selectedId);
 
   useEffect(() => {

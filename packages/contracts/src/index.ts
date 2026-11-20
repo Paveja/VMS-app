@@ -139,6 +139,11 @@ export type SearchGroup = {
   hasMore: boolean;
 };
 export type SearchResult = { query: string; groups: SearchGroup[] };
+export type SalesAreas = {
+  items: { city: string; deliveries: number; rank: number }[];
+  totalDeliveries: number;
+  totalAreas: number;
+};
 export type Role = (typeof roles)[number];
 export type Employee = { id: string; name: string; email: string; role: Role };
 export type Query = z.infer<typeof querySchema>;

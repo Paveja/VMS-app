@@ -105,12 +105,12 @@ afterEach(() => {
 });
 
 describe('Part 1 header global search', () => {
-  it('shows only neutral hints on empty focus and waits 300ms after two characters', async () => {
+  it('shows empty-query shortcuts without requesting data and waits 300ms after two characters', async () => {
     vi.useFakeTimers();
     const input = mount();
     fireEvent.focus(input);
-    expect(screen.getByText('Type at least 2 characters to find a record.')).toBeTruthy();
-    expect(screen.queryByText(/recent|quick access/i)).toBeNull();
+    expect(screen.getByText('No recent searches')).toBeTruthy();
+    expect(screen.getByRole('group', { name: 'Quick Access' })).toBeTruthy();
     type(input, 'C');
     await act(() => vi.advanceTimersByTimeAsync(400));
     expect(fetch).not.toHaveBeenCalled();
@@ -227,7 +227,7 @@ describe('Part 1 header global search', () => {
     expect(await screen.findByText('No matches found')).toBeTruthy();
     expect(screen.queryByRole('option')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Clear search' }));
-    expect(screen.getByText('Type at least 2 characters to find a record.')).toBeTruthy();
+    expect(screen.getByText('No recent searches')).toBeTruthy();
   });
   it('hides protected results on logout and prevents a pending response from restoring them', async () => {
     const input = mount();

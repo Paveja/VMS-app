@@ -122,7 +122,10 @@ export function Shell({
             <ChevronRight className="hidden text-muted-foreground sm:block" size={14} />
             <span className="hidden text-sm font-medium md:inline">Dealership operations</span>
           </div>
-          <GlobalSearch key={`${location.pathname}${location.search}`} />
+          <GlobalSearch
+            key={`${employee.id}:${location.pathname}${location.search}`}
+            employeeId={employee.id}
+          />
         </header>
         <main id="content" className="mx-auto max-w-[1600px] space-y-6 p-4 sm:p-8">
           {children}

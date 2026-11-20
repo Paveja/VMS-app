@@ -25,6 +25,7 @@ import { uploadDocument, reviewDocument, documentPath } from './lib/documents.ts
 import * as analytics from './lib/analytics.ts';
 import { trends, activity } from './lib/insights.ts';
 import { search } from './lib/global-search.ts';
+import { salesAreas } from './lib/sales-areas.ts';
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 4194304, files: 1, fields: 1 },
@@ -232,6 +233,10 @@ api.post(
 api.get(
   '/dashboard',
   wrap((request) => analytics.summary(query(request))),
+);
+api.get(
+  '/analytics/sales-areas',
+  wrap((request) => salesAreas(query(request))),
 );
 api.get(
   '/analytics/search',
