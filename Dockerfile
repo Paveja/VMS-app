@@ -7,6 +7,6 @@ COPY packages/contracts/package.json packages/contracts/package.json
 RUN npm ci
 COPY . .
 RUN npm run build
-ENV NODE_ENV=production API_PORT=4173 DOCUMENT_ROOT=/app/.data/documents
-EXPOSE 4173
+ENV NODE_ENV=production API_PORT=8080 DOCUMENT_ROOT=/app/.data/documents
+EXPOSE 8080
 CMD ["npm", "start"]

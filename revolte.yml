@@ -12,11 +12,11 @@ revolte:
           specifications: { cpu: 2, memory: 2, storage: 30 }
           properties:
             health: /api/health
-            port: 4173
+            port: 8080
             loadBalancerMode: shared
             variables:
               NODE_ENV: production
-              API_PORT: '4173'
+              API_PORT: '8080'
               DATABASE_URL: '#{postgres.dbConnectionString}'
               DOCUMENT_ROOT: /app/.data/documents
         rid_2:
@@ -31,7 +31,7 @@ revolte:
           type: WEB_SERVICE
           entryPoint: apps/api/src/server.ts
           specifications: { cpu: 2, memory: 2, storage: 30 }
-          properties: { health: /api/health, port: 4173, loadBalancerMode: shared }
+          properties: { health: /api/health, port: 8080, loadBalancerMode: shared }
         rid_2:
           name: postgres
           type: DATABASE
@@ -44,7 +44,7 @@ revolte:
           type: WEB_SERVICE
           entryPoint: apps/api/src/server.ts
           specifications: { cpu: 2, memory: 2, storage: 30 }
-          properties: { health: /api/health, port: 4173, loadBalancerMode: shared }
+          properties: { health: /api/health, port: 8080, loadBalancerMode: shared }
         rid_2:
           name: postgres
           type: DATABASE
@@ -61,7 +61,7 @@ revolte:
             memory: 2
             storage: 50
             autoScaling: { replica: { min: 1, max: 3 } }
-          properties: { health: /api/health, port: 4173, loadBalancerMode: shared }
+          properties: { health: /api/health, port: 8080, loadBalancerMode: shared }
         rid_2:
           name: postgres
           type: DATABASE
