@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+.data/
+*.log
+core
+core.*
+*.heapsnapshot
+report.*.json
+isolate-*.log
+.revolte/artifacts/

@@ -1,0 +1,68 @@
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import 'tailwindcss';
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --color-background: #f8f9fc;
+  --color-foreground: #202c42;
+  --color-card: #ffffff;
+  --color-card-foreground: #202c42;
+  --color-primary: #2958dc;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #eff3ff;
+  --color-secondary-foreground: #2958dc;
+  --color-muted: #f0f3f8;
+  --color-muted-foreground: #66748b;
+  --color-border: #e5e9f1;
+  --color-ring: #2958dc;
+  --color-success: #13734d;
+  --color-success-soft: #e9f7ef;
+  --color-warning: #985c11;
+  --color-warning-soft: #fff4e4;
+  --color-destructive: #b83748;
+  --color-destructive-foreground: #ffffff;
+  --color-destructive-soft: #fff0f1;
+  --color-info: #2958dc;
+  --color-info-soft: #edf2ff;
+  --color-chart-1: #2958dc;
+  --color-chart-2: #29a28b;
+  --color-chart-3: #a6b7e6;
+  --color-chart-4: #d5deef;
+  --radius-control: 0.5rem;
+  --radius-container: 1rem;
+  --shadow-card: 0 2px 8px #202c4204;
+  --shadow-popover: 0 8px 32px #202c4214;
+}
+@layer base {
+  :root {
+    color-scheme: light;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 3px;
+  }
+}
+@media print {
+  [data-no-print] {
+    display: none !important;
+  }
+  [data-print] {
+    position: absolute;
+    inset: 0;
+    background: white;
+    padding: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

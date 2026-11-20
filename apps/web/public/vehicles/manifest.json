@@ -1,0 +1,5 @@
+{
+  "provenance": "Original vector illustrations created for this DealerFlow demonstration. No OEM logos, trademarks, photographs or external hotlinks. Representative body styles, not exact model/VIN depictions.",
+  "assets": ["suv.svg", "sedan.svg", "hatchback.svg", "electric.svg"],
+  "fallback": "suv.svg"
+}

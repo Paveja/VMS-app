@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "port": 4173,
+  "start": "npm run db:migrate && npm run dev",
+  "install": [
+    {
+      "name": "Node.js 22",
+      "check": "node -e \"process.exit(Number(process.versions.node.split('.')[0])>=22?0:1)\" && npm --version",
+      "run": "curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - && sudo apt-get install -y nodejs"
+    },
+    {
+      "name": "npm dependencies",
+      "check": "test -d node_modules/vite && test -d node_modules/drizzle-orm",
+      "run": "npm ci"
+    }
+  ],
+  "services": [
+    {
+      "name": "PostgreSQL",
+      "check": "psql --version",
+      "install": "sudo -n apt-get update && sudo -n apt-get install -y postgresql postgresql-client",
+      "start": "node scripts/provision.mjs",
+      "ready": "pg_isready -h 127.0.0.1 -p 5432"
+    }
+  ]
+}

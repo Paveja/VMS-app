@@ -1,0 +1,68 @@
+revolte:
+  version: '1'
+  project: DealerFlow
+  appName: dealerflow
+  env:
+    preview:
+      services:
+        rid_1:
+          name: dealerflow
+          type: WEB_SERVICE
+          entryPoint: apps/api/src/server.ts
+          specifications: { cpu: 2, memory: 2, storage: 30 }
+          properties:
+            health: /api/health
+            port: 4173
+            loadBalancerMode: shared
+            variables:
+              NODE_ENV: production
+              API_PORT: '4173'
+              DATABASE_URL: '#{postgres.dbConnectionString}'
+              DOCUMENT_ROOT: /app/.data/documents
+        rid_2:
+          name: postgres
+          type: DATABASE
+          specifications: { engine: postgres, cpu: 2, memory: 1, storage: 30 }
+    qa:
+      branch: qa
+      services:
+        rid_1:
+          name: dealerflow
+          type: WEB_SERVICE
+          entryPoint: apps/api/src/server.ts
+          specifications: { cpu: 2, memory: 2, storage: 30 }
+          properties: { health: /api/health, port: 4173, loadBalancerMode: shared }
+        rid_2:
+          name: postgres
+          type: DATABASE
+          specifications: { engine: postgres, cpu: 2, memory: 1, storage: 30 }
+    staging:
+      branch: staging
+      services:
+        rid_1:
+          name: dealerflow
+          type: WEB_SERVICE
+          entryPoint: apps/api/src/server.ts
+          specifications: { cpu: 2, memory: 2, storage: 30 }
+          properties: { health: /api/health, port: 4173, loadBalancerMode: shared }
+        rid_2:
+          name: postgres
+          type: DATABASE
+          specifications: { engine: postgres, cpu: 2, memory: 1, storage: 30 }
+    production:
+      branch: main
+      services:
+        rid_1:
+          name: dealerflow
+          type: WEB_SERVICE
+          entryPoint: apps/api/src/server.ts
+          specifications:
+            cpu: 2
+            memory: 2
+            storage: 50
+            autoScaling: { replica: { min: 1, max: 3 } }
+          properties: { health: /api/health, port: 4173, loadBalancerMode: shared }
+        rid_2:
+          name: postgres
+          type: DATABASE
+          specifications: { engine: postgres, cpu: 2, memory: 1, storage: 30 }
